@@ -1,0 +1,13 @@
+.gitattributes
+build/
+build*/
+bin/
+lib/
+*.o
+*.out
+CMakeCache.txt
+CMakeFiles/
+CMakeLists.txt.user*
+*.cbp
+Makefile
+cmake_install.cmake

@@ -1,0 +1,3 @@
+namespace cm {
+
+} // namespace cm
