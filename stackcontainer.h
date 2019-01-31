@@ -1,3 +1,8 @@
+/** \file stackcontainer.h
+ * \author Andrej Leban
+ * \date 4/2018
+ */
+
 #ifndef STACKCONTAINER_H
 #define STACKCONTAINER_H
 
@@ -7,7 +12,8 @@
 namespace cm {
 
 //! \brief The StackContainer class
-//! to be used as container for std:stack
+//! An array to be used as a container for std:stack
+
 template< typename T >
 class StackContainer
 {
@@ -21,10 +27,10 @@ public:
 // Concept SequenceContainer requirements
     StackContainer() = default;
     ~StackContainer() = default;
-    StackContainer( const StackContainer & ) = default;
-    StackContainer( StackContainer && ) = default;
-    StackContainer & operator=( const StackContainer & ) = default;
-    StackContainer & operator=( StackContainer && ) = default;
+    StackContainer(const StackContainer &) = default;
+    StackContainer(StackContainer &&) noexcept = default;
+    StackContainer & operator=(const StackContainer &) = default;
+    StackContainer & operator=(StackContainer &&) noexcept = default;
 
     // reserved size is same as N! - maximum stack size, we should never exceed it
     StackContainer( size_t N ) : m_data(N), m_top(0) { m_data.shrink_to_fit();}
@@ -37,7 +43,6 @@ public:
 
     StackContainer( std::initializer_list<T> init) : m_data( init ), m_top( m_data.size() - 1 )
     { m_data.shrink_to_fit();}
-
 
 // a bit of a functional approach
     template< typename Ret >
@@ -56,7 +61,6 @@ public:
         return ret;
     }
 
-
     typename agreg::iterator begin() { return m_data.begin(); }
     // semantic container extends only to the top
     typename agreg::iterator end() { return m_data.begin() + m_top; }
@@ -64,10 +68,10 @@ public:
     typename agreg::const_iterator begin() const { return m_data.cbegin(); }
     typename agreg::const_iterator end()   const { return m_data.cbegin() + m_top; }
 
-
     StackContainer & operator=( std::initializer_list<T> init )
     {
-        return shrink( m_data.operator=( std::move(init) ) );
+        *this = shrink(m_data.operator=( std::move(init) ));
+        return *this;
     }
 
     template< class... Args >
@@ -110,13 +114,12 @@ public:
     typename agreg::iterator erase( typename agreg::const_iterator first, typename agreg::const_iterator last )
     {
         return shrink( m_data.erase(first, last ) );
-//        auto ret =
-//        m_top = m_data.size() - 1;
-//        m_data.shrink_to_fit();
-//        return ret;
     }
 
-    void clear() { m_top = 0; }
+    void clear()
+    {
+        m_top = 0;
+    }
 
     void assign( typename agreg::size_type count, const T& value )
     {
@@ -153,8 +156,8 @@ public:
     void pop_back() { m_top--; }
 
 private:
-    std::vector< T > m_data;
-    size_t m_top;
+    std::vector<T> m_data;
+    size_t m_top {0};
 };
 
 } // namespace cm
