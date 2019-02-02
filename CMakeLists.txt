@@ -1,18 +1,18 @@
 cmake_minimum_required( VERSION 3.5 )
 
-project( common VERSION 0.1 LANGUAGES CXX )
-#project( Common CXX )
+project( common VERSION 0.2 LANGUAGES CXX )
 
 include(cmake/definitions.cmake )
 include(cmake/dirs.cmake)
 
 set(HEADERS
+    btree.h
     stack.h
     stackcontainer.h
     )
 
 set(SOURCES
-    stack.cpp
+    btree.cpp
     )
 
 
