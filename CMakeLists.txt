@@ -3,8 +3,8 @@ cmake_minimum_required( VERSION 3.5 )
 project( common VERSION 0.1 LANGUAGES CXX )
 #project( Common CXX )
 
-include(../cmake/definitions.cmake )
-include(../cmake/dirs.cmake)
+include(cmake/definitions.cmake )
+include(cmake/dirs.cmake)
 
 set(HEADERS
     stack.h
