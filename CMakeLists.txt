@@ -9,6 +9,7 @@ set(HEADERS
     btree.h
     stack.h
     stackcontainer.h
+    io.h
     )
 
 set(SOURCES
