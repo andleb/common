@@ -1,3 +1,8 @@
+/** \file io.h
+ * \author Andrej Leban
+ * \date 3/2019
+ */
+
 #ifndef IO_H
 #define IO_H
 
@@ -9,7 +14,7 @@ template <class T>
 std::ostream & operator<<(std::ostream & os, const std::vector<T> & vec)
 {
     os << "{";
-    for (const auto it = vec.begin(); it != vec.end() - 1; ++it)
+    for(auto it = vec.begin(); it != vec.end() - 1; ++it)
     {
         os << *it << ", ";
     }

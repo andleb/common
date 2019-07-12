@@ -10,12 +10,12 @@ set(HEADERS
     stack.h
     stackcontainer.h
     io.h
+    numeric.h
     )
 
 set(SOURCES
     btree.cpp
     )
-
 
 add_library(common SHARED ${HEADERS} ${SOURCES})
 
@@ -57,5 +57,11 @@ install(TARGETS common
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/common" #${CMAKE_INSTALL_INCLUDEDIR}
     )
 
-#add_executable()
-#target_link_libraries( analyzer ${PROJECT_LINK_LIBS} )
+
+# testing scripts
+add_executable(test_numeric
+    ${HEADERS}
+    test_numeric.cpp
+    )
+
+target_link_libraries(test_numeric ${PROJECT_LINK_LIBS})
