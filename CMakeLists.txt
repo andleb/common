@@ -56,12 +56,3 @@ install(TARGETS common
     LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" #${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/common" #${CMAKE_INSTALL_INCLUDEDIR}
     )
-
-
-# testing scripts
-add_executable(test_numeric
-    ${HEADERS}
-    test_numeric.cpp
-    )
-
-target_link_libraries(test_numeric ${PROJECT_LINK_LIBS})
