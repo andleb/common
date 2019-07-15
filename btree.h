@@ -8,7 +8,6 @@
 
 #include <algorithm>
 #include <stdexcept>
-#include <deque>
 #include <vector>
 
 namespace cm {
@@ -21,11 +20,13 @@ size_t numElems(size_t depth);
 //! An implementation of a fixed-depth binary tree
 //! Requires \p Node to have a default value signifying an empty(leaf) node
 //! BFS indexing, matching the underlying array container
-
 template<typename Node>
 class bTree
 {
 public:
+
+    using node_type = Node;
+
     //! \brief bTree
     //! \param depth - number of sublevels, [0, inf)
     bTree(size_t depth): m_depth(depth), m_data(numElems(m_depth)) {}
@@ -44,6 +45,8 @@ public:
     static size_t goDownRight(size_t ind);
 
     // vector will naturally throw when out of bounds or parent of root, so no possibility of an invalid ref
+    Node & root();
+
     Node & parent(const Node & node);
     Node & leftchild(const Node & node);
     Node & rightchild(const Node & node);
@@ -94,6 +97,12 @@ template<typename Node>
 size_t bTree<Node>::goDownRight(size_t ind)
 {
     return 2 * ind + 2;
+}
+
+template<typename Node>
+Node & bTree<Node>::root()
+{
+    return m_data[0];
 }
 
 template<typename Node>

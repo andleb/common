@@ -4,8 +4,6 @@
  */
 
 #include <cmath>
-#include <stdexcept>
-#include <numeric>
 
 #include "btree.h"
 
