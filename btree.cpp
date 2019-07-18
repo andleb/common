@@ -3,15 +3,10 @@
  * \date 1/2019
  */
 
-#include <cmath>
-
 #include "btree.h"
 
-namespace cm {
-
-size_t numElems(size_t depth)
+namespace cm
 {
-    return static_cast<size_t>(std::pow(2, depth + 1) - 1);
-}
+// leaving empty, at least one cpp file per project helps CMake determine the language
 
 } // namespace cm
