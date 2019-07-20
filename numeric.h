@@ -18,6 +18,8 @@
 namespace cm
 {
 
+//! \section Sequence generation
+
 //! \brief linspace
 //! Return evenly spaced numbers over a specified interval.
 //! \param start: The starting value of the sequence.
@@ -100,6 +102,22 @@ std::vector<T> logspace(T start, T stop, size_t num, bool endpoint = true, doubl
     std::transform(powers.begin(), powers.end(), ret.begin(), [base](auto power) { return std::pow(base, power); });
     return ret;
 }
+
+//! \section Progressions
+
+//! \brief arithm_sum
+//! \param n: number of terms
+//! \param a1: first term
+//! \param d: difference between terms
+//! \return the sum of an arithmetic progression after \param n terms
+long arithm_sum(long n, long a1, long d);
+
+//! \brief geom_sum
+//! \param n: number of terms
+//! \param a1: first term
+//! \param d: difference between terms
+//! \return the sum of a geometric progression after \param n terms
+long geom_sum(long n, long a1, long d);
 
 } // namespace cm
 #endif // NUMERIC_H

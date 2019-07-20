@@ -14,7 +14,8 @@ set(HEADERS
     )
 
 set(SOURCES
-    btree.cpp
+#    btree.cpp
+    numeric.cpp
     )
 
 add_library(common SHARED ${HEADERS} ${SOURCES})
