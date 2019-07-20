@@ -34,6 +34,12 @@ if( CMAKE_EXE_LINKER_FLAGS MATCHES "lc\\+\\+" )
     message( "Using libc++")
 endif()
 
+if( ${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    set( LIBSUFFIX "${LIBSUFFIX}-d")
+    message( "Using debug")
+endif()
+
+
 string( TOLOWER ${LIBSUFFIX} LIBSUFFIX)
 
 message( "Generated suffix; ${LIBSUFFIX}" )
@@ -51,7 +57,6 @@ set_target_properties(common PROPERTIES PUBLIC_HEADER "${HEADERS}" )
 include(GNUInstallDirs)
 set(CMAKE_INSTALL_PREFIX "/usr/local")
 message( "Install prefix:" ${CMAKE_INSTALL_PREFIX})
-
 
 install(TARGETS common
     LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" #${CMAKE_INSTALL_LIBDIR}
