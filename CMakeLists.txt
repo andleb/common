@@ -11,11 +11,12 @@ set(HEADERS
     stackcontainer.h
     io.h
     numeric.h
+    tools.h
     )
 
 set(SOURCES
-#    btree.cpp
     numeric.cpp
+    tools.cpp
     )
 
 add_library(common SHARED ${HEADERS} ${SOURCES})
