@@ -7,10 +7,11 @@ include(cmake/dirs.cmake)
 
 set(HEADERS
     btree.h
-    stack.h
-    stackcontainer.h
+    functional.h
     io.h
     numeric.h
+    stack.h
+    stackcontainer.h
     tools.h
     )
 

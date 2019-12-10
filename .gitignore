@@ -11,3 +11,5 @@ CMakeLists.txt.user*
 *.cbp
 Makefile
 cmake_install.cmake
+
+*.autosave
