@@ -1,5 +1,5 @@
-#ifndef FUNCTIONAL_H
-#define FUNCTIONAL_H
+#ifndef CFUNCTIONAL_H
+#define CFUNCTIONAL_H
 
 #include <utility>
 
@@ -30,4 +30,4 @@ T moving_accumulate(BeginIt first, const EndIt& last, T init,
 
 } // namespace cm
 
-#endif // FUNCTIONAL_H
+#endif // CFUNCTIONAL_H
