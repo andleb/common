@@ -86,7 +86,7 @@ std::vector<T> geomspace(T start, T stop, size_t num = 50, bool endpoint = true)
     return ret;
 }
 
-//! \brief geomspace
+//! \brief logspace
 //! Return numbers spaced evenly on a log scale over a specified interval.
 //! \param start: The starting value of the sequence as a power of the specified \param base
 //! \param stop: The end value of the sequence as a power of the specified \param base, unless \param endpoint is set to False.
