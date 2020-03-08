@@ -19,9 +19,9 @@ namespace cm
 {
 
 //! \brief The bTree class
-//! An implementation of a fixed-depth binary tree
-//! Requires \p Node to have a default value signifying an empty(leaf) node
-//! BFS indexing, matching the underlying array container
+//! An implementation of a fixed-depth binary tree.
+//! Requires \p Node to have a default value signifying an empty(leaf) node.
+//! BFS indexing, matching the underlying array container.
 template <typename Node>
 class bTree
 {
@@ -29,45 +29,85 @@ public:
     using value_type = Node;
 
     //! \brief bTree
-    //! \param depth - number of sublevels, [0, inf)
+    //! \param depth - number of sub-levels, [0, inf)
     bTree(size_t depth)
         : m_depth(depth)
         , m_data(numElems(m_depth))
     {}
 
-    //! \paragraph Index-based operations
-    //! NOTE: these should be much faster!
+    /** @name Index-based operations
+    * NOTE: these should be much faster!
+    */
+    ///@{
+    /** \brief insert
+    * \param ind
+    * \param node
+    */
     void insert(size_t ind, Node node);
+    /** \brief remove
+    *   \param ind
+    */
     void remove(size_t ind);
+    /** \brief size
+    *   \return
+    */
     size_t size() const { return m_data.size(); }
+    ///@}
 
     auto begin() { return m_data.begin(); }
     auto end() { return m_data.end(); }
 
-    //! \paragraph Conversions
+    /** @name Conversions
+     *
+     */
+    ///@{
+    /** \brief operator []
+    * \param ind
+    * \return
+    */
     Node & operator[](size_t ind) { return m_data[ind]; }
+    /** \brief operator [] const
+    *   \param ind
+    *   \return
+    */
     const Node & operator[](size_t ind) const { return m_data[ind]; }
+    /** \brief current
+    *   \param node
+    *   \return
+    */
     size_t current(const Node & node) const;
+    ///@}
 
-    size_t goUp(size_t ind) const;
-    size_t goDownLeft(size_t ind) const;
-    size_t goDownRight(size_t ind) const;
+    virtual size_t goUp(size_t ind) const;
+    virtual size_t goDownLeft(size_t ind) const;
+    virtual size_t goDownRight(size_t ind) const;
 
+    //! \brief numElems
+    //! \param depth
+    //! \return number of elements up to the given level
     virtual size_t numElems(size_t depth) const;
 
-    //! \paragraph Node-based operations
-    // vector will naturally throw when out of bounds or parent of root, so no possibility of an invalid ref
+    /** @name Node-based operations
+     *
+     */
+    ///@{
+    // std::vector will naturally throw when out of bounds or parent of root, so no possibility of an invalid ref
+    //! \brief root
     Node & root();
+    //! \brief parent
     Node & parent(const Node & node);
+    //! \brief leftchild
     Node & leftchild(const Node & node);
+    //! \brief rightchild
     Node & rightchild(const Node & node);
+    ///@}
 
     //! \brief copySubTree
     //! \param indS: source index
     //! \param indT: target index
     //! \return target indices copied to
-    //! copies whole subtree from source index to target index
-    //! Warning: indices must be on the same level
+    //! Copies whole sub-tree from source index to target index.
+    //! Warning: indices must be on the same level!
     std::vector<size_t> copySubTree(size_t indS, size_t indT);
     void copySubTree(size_t indS, size_t indT, std::vector<size_t> & target_indices);
 
@@ -77,54 +117,62 @@ protected:
 };
 
 //! \brief The recombinantBTree class
-//! A binary tree where the inner nodes spring from two parents
+//! A binary tree where the inner nodes spring from two parents.
 template <typename Node>
 class recombinantBTree : public bTree<Node>
 {
 public:
     //! \brief recombinantBTree
-    //! \param depth - number of sublevels, [0, inf)
+    //! \param depth - number of sub-levels, [0, inf)
     recombinantBTree(size_t depth);
 
-    size_t numElems(size_t depth) const override;
-
+    //! @name Geometry
+    ///@{
+    //! \brief level
     static size_t level(size_t ind);
+    //! \brief level_size
     static size_t level_size(size_t ind);
+    //! \brief left_boundary
     static size_t left_boundary(size_t level);
+    //! \brief right_boundary
     static size_t right_boundary(size_t level);
-
-    size_t goUpLeft(size_t ind) const;
-    size_t goUpRight(size_t ind) const;
-    size_t goDownLeft(size_t ind) const;
-    size_t goDownRight(size_t ind) const;
+    ///@}
 
     // alias for compatibility
     // affects parentLeft below
-    size_t goUp(size_t ind) const { return goUpLeft(ind); }
+    size_t goUp(size_t ind) const override { return goUpLeft(ind); }
+    virtual size_t goUpLeft(size_t ind) const;
+    virtual size_t goUpRight(size_t ind) const;
+    size_t goDownLeft(size_t ind) const override;
+    size_t goDownRight(size_t ind) const override;
 
-    //! \paragraph additional Node-based operations
+    size_t numElems(size_t depth) const override;
+
+    //! @name additional Node-based operations
+    ///@{
+    //! \brief parentLeft
     Node & parentLeft(const Node & node);
+    //! \brief parentRight
     Node & parentRight(const Node & node);
+    ///@}
 
     //! \brief copySubTreeLeft
     //! \param indS: source index
     //! \param indT: target index
     //! \return A vector of copied indices in order of copying
-    //! copies whole subtree from source index to target index,
-    //! keeping the values for the shared nodes from the initial left descend
-    //! Warning: indices must be on the same level
-
+    //! copies whole sub-tree from source index to target index,
+    //! keeping the values for the shared nodes from the initial left descend.
+    //! Warning: indices must be on the same level.
     std::vector<size_t> copySubTreeLeft(size_t indS, size_t indT);
-
 
     //! \brief copySubTreeRight
     //! \param indS: source index
     //! \param indT: target index
     //! \return A vector of copied indices in order of copying
-    //! copies whole subtree from source index to target index,
-    //! setting the values for the shared nodes from final right descend
+    //! copies whole sub-tree from source index to target index,
+    //! setting the values for the shared nodes from final right descend.
     //! This means a left target can serve as a source for a node to its right later on!
-    //! Warning: indices must be on the same level
+    //! Warning: indices must be on the same level.
     std::vector<size_t> copySubTreeRight(size_t indS, size_t indT);
 
 private:
@@ -288,26 +336,6 @@ size_t recombinantBTree<Node>::level(size_t ind)
 {
     // analytic solution
     return static_cast<size_t>(std::round(std::sqrt(1 + 2 * ind) - 1));
-
-    /*
-    // O(ind) brute force implementation
-    size_t counter = 0;
-    size_t level = 0;
-    size_t lsize = 1;
-    size_t boundary = 1;
-
-    while(counter < ind)
-    {
-        if(++counter == boundary)
-        {
-            level += 1;
-            lsize += 1;
-            boundary += lsize;
-        }
-    }
-
-    return level;
-    */
 }
 
 template <typename Node>
@@ -316,13 +344,13 @@ size_t recombinantBTree<Node>::level_size(size_t ind)
     return level(ind) + 1;
 }
 
-template<typename Node>
+template <typename Node>
 size_t recombinantBTree<Node>::left_boundary(size_t level)
 {
     return static_cast<size_t>(arithm_sum(static_cast<long>(level), 1, 1));
 }
 
-template<typename Node>
+template <typename Node>
 size_t recombinantBTree<Node>::right_boundary(size_t level)
 {
     return static_cast<size_t>(arithm_sum(static_cast<long>(level + 1), 1, 1) - 1);
@@ -391,16 +419,16 @@ Node & recombinantBTree<Node>::parentRight(const Node & node)
     throw std::range_error("Node not in tree");
 }
 
-template<typename Node>
+template <typename Node>
 std::vector<size_t> recombinantBTree<Node>::copySubTreeLeft(size_t indS, size_t indT)
 {
     std::vector<size_t> ret{};
 
     // recursive implementation
-//    copySubTreeLeft(indS, indT, ret, std::make_unique<std::unordered_set<size_t>> ());
+    //    copySubTreeLeft(indS, indT, ret, std::make_unique<std::unordered_set<size_t>> ());
 
     // non-recursive implementation
-    if(!(level(indS) == level(indT)))
+    if (!(level(indS) == level(indT)))
     {
         throw std::range_error("Source and target nodes must be on the same level!");
     }
@@ -410,9 +438,9 @@ std::vector<size_t> recombinantBTree<Node>::copySubTreeLeft(size_t indS, size_t 
     size_t l = level(indS);
     size_t last = right_boundary(l);
 
-    while(last < super::m_data.size())
+    while (last < super::m_data.size())
     {
-        super::m_data[last] = super::m_data[last - 1 ];
+        super::m_data[last] = super::m_data[last - 1];
 
         // proceed to the next level
         ++l;
@@ -462,16 +490,16 @@ std::unique_ptr<std::unordered_set<size_t>> recombinantBTree<Node>::copySubTreeL
     return pSeen;
 }
 
-template<typename Node>
+template <typename Node>
 std::vector<size_t> recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t indT)
 {
     std::vector<size_t> ret{};
 
     // recursive implementation
-//    copySubTreeRight(indS, indT, ret);
+    //    copySubTreeRight(indS, indT, ret);
 
     // non-recursive implementation
-    if(!(level(indS) == level(indT)))
+    if (!(level(indS) == level(indT)))
     {
         throw std::range_error("Source and target nodes must be on the same level!");
     }
@@ -482,7 +510,7 @@ std::vector<size_t> recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t
     size_t offset = indS - left_boundary(l);
     size_t source = indS;
 
-    while(source < super::m_data.size())
+    while (source < super::m_data.size())
     {
         auto start = super::m_data.begin() + source + 1;
         // fill to the end of the level - std::algorithms use a half-open bracket
@@ -490,8 +518,7 @@ std::vector<size_t> recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t
 
         std::fill(start, end, super::m_data[source]);
 
-
-        // proceed to tge next level
+        // proceed to the next level
         ++l;
         source = left_boundary(l) + offset;
     }
@@ -499,9 +526,8 @@ std::vector<size_t> recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t
     return ret;
 }
 
-template<typename Node>
-void
-recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t indT, std::vector<size_t> & target_indices)
+template <typename Node>
+void recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t indT, std::vector<size_t> & target_indices)
 {
     bTree<Node>::m_data[indT] = super::m_data[indS];
     target_indices.push_back(indT);

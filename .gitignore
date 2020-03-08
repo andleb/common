@@ -2,6 +2,7 @@
 build/
 build*/
 bin/
+docs/
 lib/
 *.o
 *.out
@@ -11,5 +12,4 @@ CMakeLists.txt.user*
 *.cbp
 Makefile
 cmake_install.cmake
-
 *.autosave
