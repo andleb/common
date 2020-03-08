@@ -1,7 +1,11 @@
 #!/bin/bash
-# cd build
+
+echo "building & installing..."
+
 for f in `ls build`;
 	do echo $f; 
 	(cd build/$f && make install); 
 done
-# cd ..
+
+echo "generating documentation..."
+rm -r docs/* && doxygen
