@@ -1,8 +1,8 @@
 /** \file numeric.h
  * \author Andrej Leban
  * \date 7/2019
- * Numeric helper functions
- * Some are inspired by packages such as NumPy
+ * Numeric helper functions.
+ * Some are inspired by packages such as NumPy.
  */
 
 #ifndef NUMERIC_H
@@ -18,10 +18,10 @@
 namespace cm
 {
 
-//! \section Sequence generation
+//! @name Sequence generation
+///@{
 
-//! \brief linspace
-//! Return evenly spaced numbers over a specified interval.
+//! \brief Return evenly spaced numbers over a specified interval.
 //! \param start: The starting value of the sequence.
 //! \param stop: The end value of the sequence, unless \param endpoint is set to False.
 //! \param num: Number of samples to generate. Default is 50.
@@ -46,8 +46,7 @@ std::vector<T> linspace(T start, T stop, size_t num = 50, bool endpoint = true)
     return ret;
 }
 
-//! \brief geomspace
-//! Return numbers spaced evenly on a log scale over a specified interval.
+//! \brief Return numbers spaced evenly on a log scale over a specified interval.
 //! \param start: The starting value of the sequence.
 //! \param stop: The end value of the sequence, unless \param endpoint is set to False.
 //! \param num: Number of samples to generate. Default is 50.
@@ -86,8 +85,7 @@ std::vector<T> geomspace(T start, T stop, size_t num = 50, bool endpoint = true)
     return ret;
 }
 
-//! \brief logspace
-//! Return numbers spaced evenly on a log scale over a specified interval.
+//! \brief Return numbers spaced evenly on a log scale over a specified interval.
 //! \param start: The starting value of the sequence as a power of the specified \param base
 //! \param stop: The end value of the sequence as a power of the specified \param base, unless \param endpoint is set to False.
 //! \param num: Number of samples to generate. Default is 50.
@@ -102,22 +100,25 @@ std::vector<T> logspace(T start, T stop, size_t num, bool endpoint = true, doubl
     std::transform(powers.begin(), powers.end(), ret.begin(), [base](auto power) { return std::pow(base, power); });
     return ret;
 }
+///@}
 
-//! \section Progressions
+//! \name Progressions & Sums
+///@{
 
-//! \brief arithm_sum
+//! \brief the arithmetic sum
 //! \param n: number of terms
 //! \param a1: first term
 //! \param d: difference between terms
 //! \return the sum of an arithmetic progression after \param n terms
 long arithm_sum(long n, long a1, long d);
 
-//! \brief geom_sum
+//! \brief the geometric sum
 //! \param n: number of terms
 //! \param a1: first term
 //! \param d: difference between terms
 //! \return the sum of a geometric progression after \param n terms
 long geom_sum(long n, long a1, long d);
+///@}
 
 } // namespace cm
 #endif // NUMERIC_H

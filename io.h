@@ -10,11 +10,15 @@
 #include <ostream>
 #include <vector>
 
+//! \brief Overload for easy printing of std::vector contents.
+//! \param os
+//! \param vec
+//! \return
 template <class T>
 std::ostream & operator<<(std::ostream & os, const std::vector<T> & vec)
 {
     os << "{";
-    for(auto it = vec.begin(); it != vec.end() - 1; ++it)
+    for (auto it = vec.begin(); it != vec.end() - 1; ++it)
     {
         os << *it << ", ";
     }

@@ -17,7 +17,6 @@ set(HEADERS
 
 set(SOURCES
     numeric.cpp
-    tools.cpp
     )
 
 add_library(common SHARED ${HEADERS} ${SOURCES})

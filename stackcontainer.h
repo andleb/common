@@ -12,7 +12,7 @@
 namespace cm {
 
 //! \brief The StackContainer class
-//! An array to be used as a container for std:stack
+//! An array to be used as a container for std:stack.
 
 template< typename T >
 class StackContainer

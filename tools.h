@@ -11,6 +11,7 @@
 namespace cm
 {
 
+//! \brief Simple compile-time compiler version printer.
 inline void compiler_version()
 {
 

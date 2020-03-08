@@ -11,7 +11,7 @@
 namespace cm {
 
 //! \brief The Stack class
-//! A std::stack that exposes the underlying container
+//! A std::stack that exposes the underlying container.
 
 template< class T, class Container = std::deque<T>>
 class Stack : public std::stack<T,Container>
@@ -39,6 +39,7 @@ public:
     }
 
     // expose container
+    //! \brief The exposed container.
     Container & m_c = super::c;
 };
 

@@ -102,12 +102,11 @@ public:
     Node & rightchild(const Node & node);
     ///@}
 
-    //! \brief copySubTree
+    //! \brief Copies whole sub-tree from source index to target index.
+    //! Warning: indices must be on the same level!
     //! \param indS: source index
     //! \param indT: target index
     //! \return target indices copied to
-    //! Copies whole sub-tree from source index to target index.
-    //! Warning: indices must be on the same level!
     std::vector<size_t> copySubTree(size_t indS, size_t indT);
     void copySubTree(size_t indS, size_t indT, std::vector<size_t> & target_indices);
 
@@ -156,23 +155,21 @@ public:
     Node & parentRight(const Node & node);
     ///@}
 
-    //! \brief copySubTreeLeft
-    //! \param indS: source index
-    //! \param indT: target index
-    //! \return A vector of copied indices in order of copying
-    //! copies whole sub-tree from source index to target index,
+    //! \brief copies whole sub-tree from source index to target index,
     //! keeping the values for the shared nodes from the initial left descend.
     //! Warning: indices must be on the same level.
-    std::vector<size_t> copySubTreeLeft(size_t indS, size_t indT);
-
-    //! \brief copySubTreeRight
     //! \param indS: source index
     //! \param indT: target index
     //! \return A vector of copied indices in order of copying
-    //! copies whole sub-tree from source index to target index,
+    std::vector<size_t> copySubTreeLeft(size_t indS, size_t indT);
+
+    //! \brief copies whole sub-tree from source index to target index,
     //! setting the values for the shared nodes from final right descend.
     //! This means a left target can serve as a source for a node to its right later on!
     //! Warning: indices must be on the same level.
+    //! \param indS: source index
+    //! \param indT: target index
+    //! \return A vector of copied indices in order of copying
     std::vector<size_t> copySubTreeRight(size_t indS, size_t indT);
 
 private:
