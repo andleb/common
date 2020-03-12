@@ -7,5 +7,5 @@ for f in `ls build`;
 	(cd build/$f && make install); 
 done
 
-echo "generating documentation..."
+echo "\n\n\ngenerating documentation...\n"
 rm -r docs/* && doxygen

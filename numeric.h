@@ -23,9 +23,9 @@ namespace cm
 
 //! \brief Return evenly spaced numbers over a specified interval.
 //! \param start: The starting value of the sequence.
-//! \param stop: The end value of the sequence, unless \param endpoint is set to False.
+//! \param stop: The end value of the sequence, unless \p endpoint is set to False.
 //! \param num: Number of samples to generate. Default is 50.
-//! \param endpoint: Include \param stop in the sample
+//! \param endpoint: Include \p stop in the sample
 //! \return a std::vector of generated samples
 template <typename T>
 std::vector<T> linspace(T start, T stop, size_t num = 50, bool endpoint = true)
@@ -46,11 +46,11 @@ std::vector<T> linspace(T start, T stop, size_t num = 50, bool endpoint = true)
     return ret;
 }
 
-//! \brief Return numbers spaced evenly on a log scale over a specified interval.
+//! \brief Return numbers spaced evenly on a geometric scale over a specified interval.
 //! \param start: The starting value of the sequence.
-//! \param stop: The end value of the sequence, unless \param endpoint is set to False.
+//! \param stop: The end value of the sequence, unless \p endpoint is set to False.
 //! \param num: Number of samples to generate. Default is 50.
-//! \param endpoint: Include \param stop in the sample
+//! \param endpoint: Include \p stop in the sample
 //! \return a std::vector of generated samples
 template <typename T>
 std::vector<T> geomspace(T start, T stop, size_t num = 50, bool endpoint = true)
@@ -86,10 +86,10 @@ std::vector<T> geomspace(T start, T stop, size_t num = 50, bool endpoint = true)
 }
 
 //! \brief Return numbers spaced evenly on a log scale over a specified interval.
-//! \param start: The starting value of the sequence as a power of the specified \param base
-//! \param stop: The end value of the sequence as a power of the specified \param base, unless \param endpoint is set to False.
+//! \param start: The starting value of the sequence as a power of the specified \p base
+//! \param stop: The end value of the sequence as a power of the specified \p base, unless \p endpoint is set to False.
 //! \param num: Number of samples to generate. Default is 50.
-//! \param endpoint: Include \param stop in the sample
+//! \param endpoint: Include \p stop in the sample
 //! \param base: base of the logarithm
 //! \return a std::vector of generated samples
 template <typename T>
@@ -109,14 +109,14 @@ std::vector<T> logspace(T start, T stop, size_t num, bool endpoint = true, doubl
 //! \param n: number of terms
 //! \param a1: first term
 //! \param d: difference between terms
-//! \return the sum of an arithmetic progression after \param n terms
+//! \return the sum of an arithmetic progression after \p n terms
 long arithm_sum(long n, long a1, long d);
 
 //! \brief the geometric sum
 //! \param n: number of terms
 //! \param a1: first term
 //! \param d: difference between terms
-//! \return the sum of a geometric progression after \param n terms
+//! \return the sum of a geometric progression after \p n terms
 long geom_sum(long n, long a1, long d);
 ///@}
 
