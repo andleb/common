@@ -13,7 +13,7 @@
 #include <stdexcept>
 #include <vector>
 
-//TODO: * add axis param if you wish
+// TODO: * add axis param if you wish
 
 namespace cm
 {
@@ -28,7 +28,54 @@ namespace cm
 //! \param endpoint: Include \p stop in the sample
 //! \return a std::vector of generated samples
 template <typename T>
-std::vector<T> linspace(T start, T stop, size_t num = 50, bool endpoint = true)
+std::vector<T> linspace(T start, T stop, size_t num = 50, bool endpoint = true);
+
+//! \brief Return numbers spaced evenly on a geometric scale over a specified interval.
+//! \param start: The starting value of the sequence.
+//! \param stop: The end value of the sequence, unless \p endpoint is set to False.
+//! \param num: Number of samples to generate. Default is 50.
+//! \param endpoint: Include \p stop in the sample
+//! \return a std::vector of generated samples
+template <typename T>
+std::vector<T> geomspace(T start, T stop, size_t num = 50, bool endpoint = true);
+
+//! \brief Return numbers spaced evenly on a log scale over a specified interval.
+//! \param start: The starting value of the sequence as a power of the specified \p base
+//! \param stop: The end value of the sequence as a power of the specified \p base, unless \p endpoint is set to False.
+//! \param num: Number of samples to generate. Default is 50.
+//! \param endpoint: Include \p stop in the sample
+//! \param base: base of the logarithm
+//! \return a std::vector of generated samples
+template <typename T>
+std::vector<T> logspace(T start, T stop, size_t num, bool endpoint = true, double base = 10.0);
+
+///@}
+
+//! \name Progressions & Sums
+///@{
+
+//! \brief The arithmetic sum, 1-based indexing.
+//! \param n: number of terms
+//! \param a1: first term
+//! \param d: difference between terms
+//! \return The sum of an arithmetic progression after \p n terms.
+template <typename T>
+T arithm_sum(T n, T a1, T d);
+
+//! \brief The geometric sum, 1-based indexing.
+//! \param n: number of terms
+//! \param a1: first term
+//! \param d: difference between terms
+//! \return The sum of a geometric progression after \p n terms.
+template <typename T>
+double geom_sum(T n, T a1, T d);
+///@}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  IMPLEMENTATION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+std::vector<T> linspace(T start, T stop, size_t num, bool endpoint)
 {
     std::vector<T> ret(num);
     double diff = stop - start;
@@ -46,14 +93,8 @@ std::vector<T> linspace(T start, T stop, size_t num = 50, bool endpoint = true)
     return ret;
 }
 
-//! \brief Return numbers spaced evenly on a geometric scale over a specified interval.
-//! \param start: The starting value of the sequence.
-//! \param stop: The end value of the sequence, unless \p endpoint is set to False.
-//! \param num: Number of samples to generate. Default is 50.
-//! \param endpoint: Include \p stop in the sample
-//! \return a std::vector of generated samples
 template <typename T>
-std::vector<T> geomspace(T start, T stop, size_t num = 50, bool endpoint = true)
+std::vector<T> geomspace(T start, T stop, size_t num, bool endpoint)
 {
     std::vector<T> ret(num);
     size_t n = endpoint ? (num - 1) : num;
@@ -67,7 +108,7 @@ std::vector<T> geomspace(T start, T stop, size_t num = 50, bool endpoint = true)
         ret[i] = static_cast<T>(ans);
     }
 
-    //roundoff can floor the endpoint which we want exact
+    // round-off can floor the endpoint which we want exact
     ans = (ans * diff);
     if (endpoint)
     {
@@ -85,40 +126,26 @@ std::vector<T> geomspace(T start, T stop, size_t num = 50, bool endpoint = true)
     return ret;
 }
 
-//! \brief Return numbers spaced evenly on a log scale over a specified interval.
-//! \param start: The starting value of the sequence as a power of the specified \p base
-//! \param stop: The end value of the sequence as a power of the specified \p base, unless \p endpoint is set to False.
-//! \param num: Number of samples to generate. Default is 50.
-//! \param endpoint: Include \p stop in the sample
-//! \param base: base of the logarithm
-//! \return a std::vector of generated samples
 template <typename T>
-std::vector<T> logspace(T start, T stop, size_t num, bool endpoint = true, double base = 10.0)
+std::vector<T> logspace(T start, T stop, size_t num, bool endpoint, double base)
 {
     auto powers = linspace(start, stop, num, endpoint);
     std::vector<T> ret(num);
     std::transform(powers.begin(), powers.end(), ret.begin(), [base](auto power) { return std::pow(base, power); });
     return ret;
 }
-///@}
 
-//! \name Progressions & Sums
-///@{
+template <typename T>
+T arithm_sum(T n, T a1, T d)
+{
+    return static_cast<T>(std::round(static_cast<double>(2 * a1 + (n - 1) * d) / 2 * n));
+}
 
-//! \brief the arithmetic sum
-//! \param n: number of terms
-//! \param a1: first term
-//! \param d: difference between terms
-//! \return the sum of an arithmetic progression after \p n terms
-long arithm_sum(long n, long a1, long d);
-
-//! \brief the geometric sum
-//! \param n: number of terms
-//! \param a1: first term
-//! \param d: difference between terms
-//! \return the sum of a geometric progression after \p n terms
-long geom_sum(long n, long a1, long d);
-///@}
+template <typename T>
+double geom_sum(T n, T a1, T d)
+{
+    return static_cast<double>(std::round(a1 * (1.0 - std::pow(d, n)) / (1.0 - d)));
+}
 
 } // namespace cm
 #endif // NUMERIC_H

@@ -398,13 +398,13 @@ size_t recombinantBTree<Node>::level_size(size_t ind)
 template <typename Node>
 size_t recombinantBTree<Node>::left_boundary(size_t level)
 {
-    return static_cast<size_t>(arithm_sum(static_cast<long>(level), 1, 1));
+    return arithm_sum(level, 1ul, 1ul);
 }
 
 template <typename Node>
 size_t recombinantBTree<Node>::right_boundary(size_t level)
 {
-    return static_cast<size_t>(arithm_sum(static_cast<long>(level + 1), 1, 1) - 1);
+    return arithm_sum((level + 1), 1ul, 1ul) - 1;
 }
 
 template <typename Node>
@@ -417,7 +417,8 @@ template <typename Node>
 size_t recombinantBTree<Node>::numElems(size_t depth) const
 {
     // arithmetic sum w 0-based indexing
-    return static_cast<size_t>(depth * (1 + depth + 1) / 2);
+//    return static_cast<size_t>(depth * (1 + depth + 1) / 2);
+    return arithm_sum(depth, 1ul, 1ul);
 }
 
 template <typename Node>

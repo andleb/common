@@ -16,6 +16,7 @@ set(HEADERS
     )
 
 set(SOURCES
+    # empty, just to help cMake determine language
     numeric.cpp
     )
 
