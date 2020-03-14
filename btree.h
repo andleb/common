@@ -48,15 +48,10 @@ public:
      *   \return
      */
     size_t size() const;
-    ///@}
 
     auto begin();
     auto end();
 
-    /** @name Conversions
-     *
-     */
-    ///@{
     /** \brief operator []
      * \param ind
      * \return
@@ -82,6 +77,9 @@ public:
     //! \param depth
     //! \return number of elements up to the given level
     virtual size_t numElems(size_t depth) const = 0;
+    //! \brief numLevels
+    //! \return The number of total levels - the depth of the tree.
+    size_t numLevels() const;
 
     /** @name Node-based operations
      * These look up the node, so slower than index-based operations.
@@ -276,6 +274,11 @@ size_t bTree<Node>::numElems(size_t depth) const
 }
 
 template <typename Node>
+size_t bTree<Node>::numLevels() const
+{
+    return m_depth;
+}
+template <typename Node>
 Node & bTree<Node>::root()
 {
     return m_data[0];
@@ -358,6 +361,7 @@ void bTree<Node>::copySubTree(size_t indS, size_t indT, std::vector<size_t> & ta
 
     // return - goes up a level
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // recombinantBTree
