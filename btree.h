@@ -100,6 +100,10 @@ public:
     ///@}
 
 protected:
+    //! \brief Used by child classes
+    //! \param depth
+    //! \param num_elements
+    bTree(size_t depth, size_t num_elements);
 
     //! \brief Copies whole sub-tree from source index to target index.
     //! Warning: indices must be on the same level!
@@ -196,6 +200,10 @@ private:
 
 template <typename Node>
 bTree<Node>::bTree(size_t depth) : m_depth(depth), m_data(numElems(m_depth))
+{}
+
+template <typename Node>
+bTree<Node>::bTree(size_t depth, size_t num_elements) : m_depth(depth), m_data(num_elements)
 {}
 
 template <typename Node>
@@ -371,7 +379,7 @@ void bTree<Node>::copySubTree(size_t indS, size_t indT, std::vector<size_t> & ta
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename Node>
-recombinantBTree<Node>::recombinantBTree(size_t depth) : bTree<Node>(depth)
+recombinantBTree<Node>::recombinantBTree(size_t depth) : bTree<Node>(depth, numElems(depth))
 {}
 
 template <typename Node>
@@ -412,7 +420,7 @@ size_t recombinantBTree<Node>::numElems(size_t depth) const
     return static_cast<size_t>(depth * (1 + depth + 1) / 2);
 }
 
-template<typename Node>
+template <typename Node>
 Node & recombinantBTree<Node>::parent(const Node & node)
 {
     return parentLeft(node);
