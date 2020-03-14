@@ -1,6 +1,8 @@
 /** \file btree.h
  * \author Andrej Leban
  * \date 1/2019
+ *
+ * Array-based Binary Tree classes.
  */
 
 #ifndef BTREE_H
@@ -30,6 +32,7 @@ public:
     //! \brief bTree
     //! \param depth - number of sub-levels, [0, inf)
     bTree(size_t depth);
+    virtual ~bTree() = default;
 
     /** @name Index-based operations
      * NOTE: these should be much faster!
@@ -76,7 +79,7 @@ public:
     //! \brief numElems
     //! \param depth
     //! \return number of elements up to the given level
-    virtual size_t numElems(size_t depth) const = 0;
+    size_t numElems(size_t depth) const;
     //! \brief numLevels
     //! \return The number of total levels - the depth of the tree.
     size_t numLevels() const;
@@ -132,7 +135,7 @@ public:
     static size_t right_boundary(size_t level);
     ///@}
 
-    // alias for compatibility
+    // alias for compatibility - goUpLeft
     // affects parentLeft below
     virtual size_t goUp(size_t ind) const override;
     virtual size_t goUpLeft(size_t ind) const;
@@ -140,7 +143,7 @@ public:
     virtual size_t goDownLeft(size_t ind) const override;
     virtual size_t goDownRight(size_t ind) const override;
 
-    virtual size_t numElems(size_t depth) const override;
+    size_t numElems(size_t depth) const;
 
     //! @name Additional node-based operations
     //! These look up the node, so slower than index-based operations.
