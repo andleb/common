@@ -5,6 +5,12 @@ project( common VERSION 0.2 LANGUAGES CXX )
 include(cmake/definitions.cmake )
 include(cmake/dirs.cmake)
 
+# NOTE: CMAKE_BUILD_TYPE can and should be overriden by the IDE
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    message("Building in DEBUG mode, enabling testing macros.")
+    add_definitions(-DTESTING)
+endif()
+
 set(HEADERS
     btree.h
     functional.h

@@ -17,6 +17,8 @@
 
 #include <common/numeric.h>
 
+// TODO: * be careful: number of *: 1-based, level etc.: 0-based
+
 namespace cm
 {
 
@@ -31,6 +33,7 @@ public:
 
     //! \brief bTree
     //! \param depth - number of sub-levels, [0, inf)
+    //! Root is level 0!
     bTree(size_t depth);
     virtual ~bTree() = default;
 
@@ -52,7 +55,9 @@ public:
      */
     size_t size() const;
 
+    //! \brief begin
     auto begin();
+    //! \brief end
     auto end();
 
     /** \brief operator []
@@ -125,13 +130,16 @@ class recombinantBTree : public bTree<Node>
 public:
     //! \brief recombinantBTree
     //! \param depth - number of sub-levels, [0, inf)
+    //! Root is level 0!
     recombinantBTree(size_t depth);
 
     //! @name Geometry
     ///@{
     //! \brief level
+    //! \param ind - The array index.
     static size_t level(size_t ind);
     //! \brief level_size
+    //! \param ind - The array index.
     static size_t level_size(size_t ind);
     //! \brief left_boundary
     static size_t left_boundary(size_t level);
@@ -287,7 +295,7 @@ size_t bTree<Node>::numElems(size_t depth) const
 template <typename Node>
 size_t bTree<Node>::numLevels() const
 {
-    return m_depth;
+    return m_depth + 1;
 }
 template <typename Node>
 Node & bTree<Node>::root()
@@ -404,7 +412,7 @@ size_t recombinantBTree<Node>::left_boundary(size_t level)
 template <typename Node>
 size_t recombinantBTree<Node>::right_boundary(size_t level)
 {
-    return arithm_sum((level + 1), 1ul, 1ul) - 1;
+    return arithm_sum(level + 1, 1ul, 1ul) - 1;
 }
 
 template <typename Node>
@@ -417,8 +425,7 @@ template <typename Node>
 size_t recombinantBTree<Node>::numElems(size_t depth) const
 {
     // arithmetic sum w 0-based indexing
-//    return static_cast<size_t>(depth * (1 + depth + 1) / 2);
-    return arithm_sum(depth, 1ul, 1ul);
+    return arithm_sum(depth + 1, 1ul, 1ul);
 }
 
 template <typename Node>
