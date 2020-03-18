@@ -13,30 +13,6 @@
 namespace cm
 {
 
-//! @name Design Pattern helpers.
-//!@{
-
-//! \brief A base class for the implementation of the Singleton pattern via public inheritance.
-//! Note: don't forget to friend this class as well if derived constructors are not public.
-template <typename T>
-class Singleton
-{
-public:
-    Singleton(const Singleton &) = delete;
-    Singleton(Singleton &&) = delete;
-    Singleton & operator=(const Singleton &) = delete;
-    Singleton & operator=(Singleton &&) = delete;
-
-    //! \brief The Singleton instance is accessed through this.
-    static T & instance();
-
-protected:
-    Singleton() = default;
-    ~Singleton() = default;
-};
-
-//!@}
-
 
 //! \brief Simple compile-time compiler version printer.
 inline void compiler_version()
@@ -47,18 +23,6 @@ inline void compiler_version()
 #else
     std::cout << "GCC " << __GNUC__ << "." << __GNUC_MINOR__ << "." << __GNUC_PATCHLEVEL__ << '\n';
 #endif
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  IMPLEMENTATION
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template<typename T>
-T & Singleton<T>::instance()
-{
-    static T instance;
-    return instance;
 }
 
 

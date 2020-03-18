@@ -16,6 +16,7 @@ set(HEADERS
     functional.h
     io.h
     numeric.h
+    patterns.h
     stack.h
     stackcontainer.h
     tools.h

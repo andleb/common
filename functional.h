@@ -28,7 +28,7 @@ namespace cm
 template <typename BeginIt, typename EndIt, typename T, typename F>
 T moving_accumulate(BeginIt first, const EndIt & last, T init, F folding_function);
 
-///! \brief Wrapper around std::any for std::functions
+//! \brief Wrapper around std::any for std::functions.
 // Adapted from c.f.: https://stackoverflow.com/questions/45715219/store-functions-with-different-signatures-in-a-map/
 template <typename Ret>
 struct AnyCallable
