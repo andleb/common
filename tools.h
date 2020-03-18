@@ -17,6 +17,7 @@ namespace cm
 //!@{
 
 //! \brief A base class for the implementation of the Singleton pattern via public inheritance.
+//! Note: don't forget to friend this class as well if derived constructors are not public.
 template <typename T>
 class Singleton
 {

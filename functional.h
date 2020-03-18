@@ -6,6 +6,8 @@
 #ifndef CFUNCTIONAL_H
 #define CFUNCTIONAL_H
 
+#include <any>
+#include <functional>
 #include <utility>
 
 namespace cm
@@ -24,8 +26,56 @@ namespace cm
 //! \param folding_function
 //! \return the accumulated values
 template <typename BeginIt, typename EndIt, typename T, typename F>
-T moving_accumulate(BeginIt first, const EndIt & last, T init,
-                    F folding_function)
+T moving_accumulate(BeginIt first, const EndIt & last, T init, F folding_function);
+
+///! \brief Wrapper around std::any for std::functions
+// Adapted from c.f.: https://stackoverflow.com/questions/45715219/store-functions-with-different-signatures-in-a-map/
+template <typename Ret>
+struct AnyCallable
+{
+    AnyCallable() = default;
+
+    template <typename F>
+    AnyCallable(F && fun);
+
+    template <typename... Args>
+    AnyCallable(std::function<Ret(Args...)> fun);
+
+    template <typename... Args>
+    Ret operator()(Args &&... args);
+
+
+    std::any m_any;
+};
+
+
+// Specialization for void callables
+template <>
+struct AnyCallable<void>
+{
+    AnyCallable() = default;
+
+    template <typename F>
+    AnyCallable(F && fun);
+
+    template <typename... Args>
+    AnyCallable(std::function<void(Args...)> fun);
+
+    template <typename ... Args>
+    void operator()(Args &&... args);
+
+
+    std::any m_any;
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  IMPLEMENTATION
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+template <typename BeginIt, typename EndIt, typename T, typename F>
+T moving_accumulate(BeginIt first, const EndIt & last, T init, F folding_function)
 {
     for (; first != last; ++first)
     {
@@ -38,6 +88,40 @@ T moving_accumulate(BeginIt first, const EndIt & last, T init,
     }
 
     return init;
+}
+
+
+// AnyCallable
+template <typename Ret>
+template <typename F>
+AnyCallable<Ret>::AnyCallable(F && fun) : AnyCallable(std::function(fun))
+{}
+
+template <typename Ret>
+template <typename... Args>
+AnyCallable<Ret>::AnyCallable(std::function<Ret(Args...)> fun) : m_any(fun)
+{}
+
+template <typename Ret>
+template <typename... Args>
+Ret AnyCallable<Ret>::operator()(Args &&... args)
+{
+    return std::invoke(std::any_cast<std::function<Ret(Args...)>>(m_any), std::forward<Args>(args)...);
+}
+
+template <typename F>
+AnyCallable<void>::AnyCallable(F && fun) : AnyCallable(std::function(fun))
+{}
+
+template <typename... Args>
+AnyCallable<void>::AnyCallable(std::function<void(Args...)> fun)
+    : m_any(fun)
+{}
+
+template <typename... Args>
+void AnyCallable<void>::operator()(Args &&... args)
+{
+    std::invoke(std::any_cast<std::function<void(Args...)>>(m_any), std::forward<Args>(args)...);
 }
 
 } // namespace cm
