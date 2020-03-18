@@ -14,6 +14,8 @@
 //! \param os
 //! \param vec
 //! \return
+
+// NOTE: in global namespace!
 template <class T>
 std::ostream & operator<<(std::ostream & os, const std::vector<T> & vec)
 {
