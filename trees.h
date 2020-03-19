@@ -91,11 +91,12 @@ public:
     ///@{
     // std::vector will naturally throw when out of bounds or parent of root, so no possibility of an invalid ref
     //! \brief root
-    virtual Node & root() = 0;
-    virtual const Node & root() const = 0;
+    virtual Node & root();
+    virtual const Node & root() const;
     //! \brief Returns the parent node.
     // Uses goUp
-    virtual Node & parent(const Node & node) = 0;
+    // Implemented in terms of the const overload, so no pure.
+    virtual Node & parent(const Node & node);
     virtual const Node & parent(const Node & node) const = 0;
     //! \brief leftchild
     // Uses goDownLeft
@@ -171,7 +172,7 @@ public:
 
     //! \brief By convention, left parent.
     //! Implemented for the sake of consistent interface.
-    virtual Node & parent(const Node & node) override;
+    virtual const Node & parent(const Node & node) const override;
     //! \brief parentLeft
     Node & parentLeft(const Node & node);
     const Node & parentLeft(const Node & node) const;
@@ -397,17 +398,24 @@ size_t bTree<Node>::goDownRight(size_t ind) const
 template <typename Node>
 Node & bTree<Node>::root()
 {
-    return m_data[0];
+    return const_cast<Node &>(const_cast<const bTree<Node> *>(this)->root());
 }
 
 template <typename Node>
 const Node & bTree<Node>::root() const
 {
-    return const_cast<const Node &>(static_cast<bTree<Node> &>(this)->root());
+    return m_data[0];
 }
 
 template <typename Node>
 Node & bTree<Node>::parent(const Node & node)
+
+{
+    return const_cast<Node &>(const_cast<const bTree<Node> *>(this)->parent(node));
+}
+
+template <typename Node>
+const Node & bTree<Node>::parent(const Node & node) const
 {
     typename decltype(m_data)::const_iterator el;
     if ((el = std::find(m_data.begin(), m_data.end(), node)) != m_data.end())
@@ -420,14 +428,15 @@ Node & bTree<Node>::parent(const Node & node)
     throw std::range_error("Node not in tree");
 }
 
-template <typename Node>
-const Node & bTree<Node>::parent(const Node & node) const
-{
-    return const_cast<const Node &>(static_cast<bTree<Node> &>(this)->parent(node));
-}
 
 template <typename Node>
 Node & bTree<Node>::leftchild(const Node & node)
+{
+    return const_cast<Node &>(const_cast<const bTree<Node> *>(this)->leftchild(node));
+}
+
+template <typename Node>
+const Node & bTree<Node>::leftchild(const Node & node) const
 {
     typename decltype(m_data)::const_iterator el;
     if ((el = std::find(m_data.begin(), m_data.end(), node)) != m_data.end())
@@ -441,13 +450,13 @@ Node & bTree<Node>::leftchild(const Node & node)
 }
 
 template <typename Node>
-const Node & bTree<Node>::leftchild(const Node & node) const
+Node & bTree<Node>::rightchild(const Node & node)
 {
-    return const_cast<const Node &>(static_cast<bTree<Node> &>(this)->leftchild(node));
+    return const_cast< Node &>(const_cast<const bTree<Node> *>(this)->rightchild(node));
 }
 
 template <typename Node>
-Node & bTree<Node>::rightchild(const Node & node)
+const Node & bTree<Node>::rightchild(const Node & node) const
 {
     typename decltype(m_data)::const_iterator el;
     if ((el = std::find(m_data.begin(), m_data.end(), node)) != m_data.end())
@@ -458,12 +467,6 @@ Node & bTree<Node>::rightchild(const Node & node)
     }
 
     throw std::range_error("Node not in tree");
-}
-
-template <typename Node>
-const Node & bTree<Node>::rightchild(const Node & node) const
-{
-    return const_cast<const Node &>(static_cast<bTree<Node> &>(this)->rightchild(node));
 }
 
 template <typename Node>
@@ -586,13 +589,19 @@ size_t recombinantBTree<Node>::goDownRight(size_t ind) const
 }
 
 template <typename Node>
-Node & recombinantBTree<Node>::parent(const Node & node)
+const Node & recombinantBTree<Node>::parent(const Node & node) const
 {
     return parentLeft(node);
 }
 
 template <typename Node>
 Node & recombinantBTree<Node>::parentLeft(const Node & node)
+{
+    return const_cast<Node &>(const_cast<const recombinantBTree<Node> *>(this)->parentLeft(node));
+}
+
+template <typename Node>
+const Node & recombinantBTree<Node>::parentLeft(const Node & node) const
 {
     typename decltype(super::m_data)::const_iterator el;
     if ((el = std::find(super::m_data.begin(), super::m_data.end(), node)) != super::m_data.end())
@@ -606,13 +615,13 @@ Node & recombinantBTree<Node>::parentLeft(const Node & node)
 }
 
 template <typename Node>
-const Node & recombinantBTree<Node>::parentLeft(const Node & node) const
+Node & recombinantBTree<Node>::parentRight(const Node & node)
 {
-    return const_cast<const Node &>(static_cast<recombinantBTree<Node> &>(this).parentLeft(node));
+    return const_cast<Node &>(const_cast<const recombinantBTree<Node> *>(this)->parentRight(node));
 }
 
 template <typename Node>
-Node & recombinantBTree<Node>::parentRight(const Node & node)
+const Node & recombinantBTree<Node>::parentRight(const Node & node) const
 {
     typename decltype(super::m_data)::const_iterator el;
     if ((el = std::find(super::m_data.begin(), super::m_data.end(), node)) != super::m_data.end())
@@ -623,12 +632,6 @@ Node & recombinantBTree<Node>::parentRight(const Node & node)
     }
 
     throw std::range_error("Node not in tree");
-}
-
-template <typename Node>
-const Node & recombinantBTree<Node>::parentRight(const Node & node) const
-{
-    return const_cast<const Node &>(static_cast<recombinantBTree<Node> &>(this).parentRight(node));
 }
 
 template <typename Node>
