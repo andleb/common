@@ -585,7 +585,7 @@ Node & recombinantBTree<Node>::parentLeft(const Node & node)
 template <typename Node>
 const Node & recombinantBTree<Node>::parentLeft(const Node & node) const
 {
-    return super::m_data[goUpLeft(node2Ind(node))];
+    return super::m_data[goUpLeft(super::node2Ind(node))];
 }
 
 template <typename Node>
@@ -597,7 +597,7 @@ Node & recombinantBTree<Node>::parentRight(const Node & node)
 template <typename Node>
 const Node & recombinantBTree<Node>::parentRight(const Node & node) const
 {
-    return super::m_data[goUpRight(node2Ind(node))];
+    return super::m_data[goUpRight(super::node2Ind(node))];
 }
 
 template <typename Node>
@@ -844,7 +844,7 @@ Node & recombinantTTree<Node>::parentLeft(const Node & node)
 template <typename Node>
 const Node & recombinantTTree<Node>::parentLeft(const Node & node) const
 {
-    return super::m_data[goUpLeft(node2Ind(node))];
+    return super::m_data[goUpLeft(super::node2Ind(node))];
 }
 
 template <typename Node>
@@ -856,7 +856,7 @@ Node & recombinantTTree<Node>::parentCenter(const Node & node)
 template <typename Node>
 const Node & recombinantTTree<Node>::parentCenter(const Node & node) const
 {
-    super::m_data[goUpCenter(node2Ind(node))];
+    super::m_data[goUpCenter(super::node2Ind(node))];
 }
 
 template <typename Node>
@@ -868,7 +868,7 @@ Node & recombinantTTree<Node>::parentRight(const Node & node)
 template <typename Node>
 const Node & recombinantTTree<Node>::parentRight(const Node & node) const
 {
-    super::m_data[goUpRight(node2Ind(node))];
+    super::m_data[goUpRight(super::node2Ind(node))];
 }
 
 template <typename Node>
@@ -880,7 +880,7 @@ Node & recombinantTTree<Node>::centerchild(const Node & node)
 template <typename Node>
 const Node & recombinantTTree<Node>::centerchild(const Node & node) const
 {
-    super::m_data[goDownCenter(node2Ind(node))];
+    super::m_data[goDownCenter(super::node2Ind(node))];
 }
 
 template<typename Node>
