@@ -3,8 +3,8 @@ Common/helper classes, used in other projects.
 
 ## Overview
 
-#### bTree
-Array implementations of binary trees.
+#### trees
+Array implementations of various trees.
 
 #### functional
 Helpers that facilitate functional programming in *C++*.

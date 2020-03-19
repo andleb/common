@@ -12,7 +12,6 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 endif()
 
 set(HEADERS
-    btree.h
     functional.h
     io.h
     numeric.h
@@ -20,6 +19,7 @@ set(HEADERS
     stack.h
     stackcontainer.h
     tools.h
+    trees.h
     )
 
 set(SOURCES
