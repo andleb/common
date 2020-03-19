@@ -70,6 +70,15 @@ public:
     //! \return
     size_t node2Ind(const Node & node) const;
 
+    //! \brief Number of elements up to and including(!) the given level.
+    //! \param level
+    //! \return
+    // called from constructor, so not virtual.
+    size_t numElems(size_t level) const;
+    //! \brief The number of total levels - the depth of the tree + 1
+    //! (constructor is 0-indexed).
+    size_t numLevels() const;
+
     // For each tree it must be possible to go up, hence pure virtual.
     // Since the geometry will almost always differ (else why subclass?), it is made pure
     // in contrast to simple functions such as insert above that can simply get inherited.
@@ -77,29 +86,25 @@ public:
     virtual size_t goDownLeft(size_t ind) const;
     virtual size_t goDownRight(size_t ind) const;
 
-    //! \brief Number of elements up to and including(!) the given level.
-    //! \param level
-    //! \return
-    size_t numElems(size_t level) const;
-    //! \brief The number of total levels - the depth of the tree + 1
-    //! (constructor is 0-indexed).
-    size_t numLevels() const;
-
     //! @name Node-based operations
     //! These look up the node, so slower (\f$\mathcal{O}(n)\f$) than index-based operations.
     ///@{
     // std::vector will naturally throw when out of bounds or parent of root, so no possibility of an invalid ref
     //! \brief root
     virtual Node & root() = 0;
-    //! \brief parent
+    virtual const Node & root() const = 0;
+    //! \brief Returns the parent node.
     // Uses goUp
     virtual Node & parent(const Node & node) = 0;
+    virtual const Node & parent(const Node & node) const = 0;
     //! \brief leftchild
     // Uses goDownLeft
     virtual Node & leftchild(const Node & node);
+    virtual const Node & leftchild(const Node & node) const;
     //! \brief rightchild
     // Uses goDownRight
     virtual Node & rightchild(const Node & node);
+    virtual const Node & rightchild(const Node & node) const;
     ///@}
 
     //! \brief Copies whole sub-tree from source index to target index.
@@ -107,7 +112,9 @@ public:
     //! \param indS: source index
     //! \param indT: target index
     //! \return Target indices copied to.
+    // No harm in these getting inherited, worst-case scenario is overwriting of same nodes.
     std::vector<size_t> copySubTree(size_t indS, size_t indT);
+
 protected:
     //! \brief Used by child classes
     //! \param depth
@@ -122,8 +129,8 @@ protected:
     std::vector<Node> m_data;
 };
 
-//! \brief The recombinantBTree class
-//! A binary tree where the inner nodes spring from two parents.
+
+//! \brief A binary tree where the inner nodes spring from two parents.
 template <typename Node>
 class recombinantBTree : public bTree<Node>
 {
@@ -141,11 +148,14 @@ public:
     //! \brief level_size
     //! \param ind - The array index.
     static size_t level_size(size_t ind);
-    //! \brief left_boundary
+    //! \brief left_boundary - inclusive!
     static size_t left_boundary(size_t level);
-    //! \brief right_boundary
+    //! \brief right_boundary - inclusive.
     static size_t right_boundary(size_t level);
     ///@}
+
+    // called from constructor, so not virtual.
+    size_t numElems(size_t depth) const;
 
     // alias for compatibility - goUpLeft
     // affects parentLeft below
@@ -154,8 +164,6 @@ public:
     virtual size_t goUpRight(size_t ind) const;
     virtual size_t goDownLeft(size_t ind) const override;
     virtual size_t goDownRight(size_t ind) const override;
-
-    size_t numElems(size_t depth) const;
 
     //! @name Additional node-based operations
     //! These look up the node, so slower than index-based operations.
@@ -166,9 +174,10 @@ public:
     virtual Node & parent(const Node & node) override;
     //! \brief parentLeft
     Node & parentLeft(const Node & node);
+    const Node & parentLeft(const Node & node) const;
     //! \brief parentRight
     Node & parentRight(const Node & node);
-
+    const Node & parentRight(const Node & node) const;
     // NOTE: the rest, e.g. *child are taken care of by the base class & having implemented
     // the go* virtuals
 
@@ -191,14 +200,15 @@ public:
     //! \return A vector of copied indices in order of copying
     std::vector<size_t> copySubTreeRight(size_t indS, size_t indT);
 
-private:
+protected:
     using super = bTree<Node>;
 
-    // recursive implementations not used
-    void copySubTreeRight(size_t indS, size_t indT, std::vector<size_t> & target_indices);
-    // TODO: what is this?
+private:
+    // deprecated recursive implementations.
     std::unique_ptr<std::unordered_set<size_t>> copySubTreeLeft(size_t indS, size_t indT, std::vector<size_t> & target_indices,
                                                                 std::unique_ptr<std::unordered_set<size_t>> pSeen = nullptr);
+    // doesn't need a list of visited nodes as it doesn't care about overwriting.
+    void copySubTreeRight(size_t indS, size_t indT, std::vector<size_t> & target_indices);
 };
 
 
@@ -221,11 +231,14 @@ public:
     //! \brief level_size
     //! \param ind - The array index.
     static size_t level_size(size_t ind);
-    //! \brief left_boundary
+    //! \brief left_boundary - inclusive!
     static size_t left_boundary(size_t level);
-    //! \brief right_boundary
+    //! \brief right_boundary - inclusive.
     static size_t right_boundary(size_t level);
     ///@}
+
+    // called from constructor, so not virtual.
+    size_t numElems(size_t depth) const;
 
     // alias for compatibility - goUpLeft
     // affects parentLeft below
@@ -237,8 +250,6 @@ public:
     virtual size_t goDownCenter(size_t ind) const override;
     virtual size_t goDownRight(size_t ind) const override;
 
-    size_t numElems(size_t depth) const;
-
     //! @name Additional node-based operations
     //! These look up the node, so slower than index-based operations.
     ///@{
@@ -248,9 +259,10 @@ public:
     virtual Node & parent(const Node & node) override;
     //! \brief parentLeft
     Node & parentLeft(const Node & node);
+    const Node & parentLeft(const Node & node) const;
     //! \brief parentRight
     Node & parentRight(const Node & node);
-
+    const Node & parentRight(const Node & node) const;
     // NOTE: the rest, e.g. *child are taken care of by the base class & having implemented
     // the go* virtuals
 
@@ -273,14 +285,8 @@ public:
     //! \return A vector of copied indices in order of copying
     std::vector<size_t> copySubTreeRight(size_t indS, size_t indT);
 
-private:
+protected:
     using super = bTree<Node>;
-
-    // recursive implementations not used
-    void copySubTreeRight(size_t indS, size_t indT, std::vector<size_t> & target_indices);
-    // TODO: what is this?
-    std::unique_ptr<std::unordered_set<size_t>> copySubTreeLeft(size_t indS, size_t indT, std::vector<size_t> & target_indices,
-        std::unique_ptr<std::unordered_set<size_t>> pSeen = nullptr);
 };
 
 
@@ -318,18 +324,6 @@ size_t bTree<Node>::totalElems() const
 }
 
 template <typename Node>
-auto bTree<Node>::begin()
-{
-    return m_data.begin();
-}
-
-template <typename Node>
-auto bTree<Node>::end()
-{
-    return m_data.end();
-}
-
-template <typename Node>
 Node & bTree<Node>::operator[](size_t ind)
 {
     return m_data[ind];
@@ -342,6 +336,18 @@ const Node & bTree<Node>::operator[](size_t ind) const
 }
 
 template <typename Node>
+auto bTree<Node>::begin()
+{
+    return m_data.begin();
+}
+
+template <typename Node>
+auto bTree<Node>::end()
+{
+    return m_data.end();
+}
+
+template <typename Node>
 size_t bTree<Node>::node2Ind(const Node & node) const
 {
     typename decltype(m_data)::iterator el;
@@ -351,6 +357,18 @@ size_t bTree<Node>::node2Ind(const Node & node) const
     }
 
     throw std::range_error("Node not in tree");
+}
+
+template <typename Node>
+size_t bTree<Node>::numElems(size_t level) const
+{
+    return static_cast<size_t>(std::pow(2, level + 1) - 1);
+}
+
+template <typename Node>
+size_t bTree<Node>::numLevels() const
+{
+    return m_depth + 1;
 }
 
 template <typename Node>
@@ -377,26 +395,21 @@ size_t bTree<Node>::goDownRight(size_t ind) const
 }
 
 template <typename Node>
-size_t bTree<Node>::numElems(size_t level) const
-{
-    return static_cast<size_t>(std::pow(2, level + 1) - 1);
-}
-
-template <typename Node>
-size_t bTree<Node>::numLevels() const
-{
-    return m_depth + 1;
-}
-template <typename Node>
 Node & bTree<Node>::root()
 {
     return m_data[0];
 }
 
 template <typename Node>
+const Node & bTree<Node>::root() const
+{
+    return const_cast<const Node &>(static_cast<bTree<Node> &>(this)->root());
+}
+
+template <typename Node>
 Node & bTree<Node>::parent(const Node & node)
 {
-    typename decltype(m_data)::iterator el;
+    typename decltype(m_data)::const_iterator el;
     if ((el = std::find(m_data.begin(), m_data.end(), node)) != m_data.end())
     {
         auto ind = std::distance(m_data.begin(), el);
@@ -408,9 +421,15 @@ Node & bTree<Node>::parent(const Node & node)
 }
 
 template <typename Node>
+const Node & bTree<Node>::parent(const Node & node) const
+{
+    return const_cast<const Node &>(static_cast<bTree<Node> &>(this)->parent(node));
+}
+
+template <typename Node>
 Node & bTree<Node>::leftchild(const Node & node)
 {
-    typename decltype(m_data)::iterator el;
+    typename decltype(m_data)::const_iterator el;
     if ((el = std::find(m_data.begin(), m_data.end(), node)) != m_data.end())
     {
         auto ind = std::distance(m_data.begin(), el);
@@ -422,9 +441,15 @@ Node & bTree<Node>::leftchild(const Node & node)
 }
 
 template <typename Node>
+const Node & bTree<Node>::leftchild(const Node & node) const
+{
+    return const_cast<const Node &>(static_cast<bTree<Node> &>(this)->leftchild(node));
+}
+
+template <typename Node>
 Node & bTree<Node>::rightchild(const Node & node)
 {
-    typename decltype(m_data)::iterator el;
+    typename decltype(m_data)::const_iterator el;
     if ((el = std::find(m_data.begin(), m_data.end(), node)) != m_data.end())
     {
         auto ind = std::distance(m_data.begin(), el);
@@ -433,6 +458,12 @@ Node & bTree<Node>::rightchild(const Node & node)
     }
 
     throw std::range_error("Node not in tree");
+}
+
+template <typename Node>
+const Node & bTree<Node>::rightchild(const Node & node) const
+{
+    return const_cast<const Node &>(static_cast<bTree<Node> &>(this)->rightchild(node));
 }
 
 template <typename Node>
@@ -506,12 +537,6 @@ size_t recombinantBTree<Node>::right_boundary(size_t level)
 }
 
 template <typename Node>
-size_t recombinantBTree<Node>::goUp(size_t ind) const
-{
-    return goUpLeft(ind);
-}
-
-template <typename Node>
 size_t recombinantBTree<Node>::numElems(size_t depth) const
 {
     // arithmetic sum w 0-based indexing
@@ -519,9 +544,9 @@ size_t recombinantBTree<Node>::numElems(size_t depth) const
 }
 
 template <typename Node>
-Node & recombinantBTree<Node>::parent(const Node & node)
+size_t recombinantBTree<Node>::goUp(size_t ind) const
 {
-    return parentLeft(node);
+    return goUpLeft(ind);
 }
 
 template <typename Node>
@@ -561,15 +586,35 @@ size_t recombinantBTree<Node>::goDownRight(size_t ind) const
 }
 
 template <typename Node>
+Node & recombinantBTree<Node>::parent(const Node & node)
+{
+    return parentLeft(node);
+}
+
+template <typename Node>
 Node & recombinantBTree<Node>::parentLeft(const Node & node)
 {
-    return parent(node);
+    typename decltype(super::m_data)::const_iterator el;
+    if ((el = std::find(super::m_data.begin(), super::m_data.end(), node)) != super::m_data.end())
+    {
+        auto ind = std::distance(super::m_data.begin(), el);
+        auto newInd = goUpLeft(ind);
+        return super::m_data[newInd];
+    }
+
+    throw std::range_error("Node not in tree");
+}
+
+template <typename Node>
+const Node & recombinantBTree<Node>::parentLeft(const Node & node) const
+{
+    return const_cast<const Node &>(static_cast<recombinantBTree<Node> &>(this).parentLeft(node));
 }
 
 template <typename Node>
 Node & recombinantBTree<Node>::parentRight(const Node & node)
 {
-    typename decltype(super::m_data)::iterator el;
+    typename decltype(super::m_data)::const_iterator el;
     if ((el = std::find(super::m_data.begin(), super::m_data.end(), node)) != super::m_data.end())
     {
         auto ind = std::distance(super::m_data.begin(), el);
@@ -581,19 +626,22 @@ Node & recombinantBTree<Node>::parentRight(const Node & node)
 }
 
 template <typename Node>
+const Node & recombinantBTree<Node>::parentRight(const Node & node) const
+{
+    return const_cast<const Node &>(static_cast<recombinantBTree<Node> &>(this).parentRight(node));
+}
+
+template <typename Node>
 std::vector<size_t> recombinantBTree<Node>::copySubTreeLeft(size_t indS, size_t indT)
 {
     std::vector<size_t> ret{};
 
-    // recursive implementation
-    //    copySubTreeLeft(indS, indT, ret, std::make_unique<std::unordered_set<size_t>> ());
-
-    // non-recursive implementation
     if (!(level(indS) == level(indT)))
     {
         throw std::range_error("Source and target nodes must be on the same level!");
     }
 
+    // non-recursive implementation:
     // this is equal to setting the last value on the level to the value preceding it for all the levels below
     // and including the initial
     size_t l = level(indS);
@@ -606,6 +654,39 @@ std::vector<size_t> recombinantBTree<Node>::copySubTreeLeft(size_t indS, size_t 
         // proceed to the next level
         ++l;
         last = right_boundary(l);
+    }
+
+    return ret;
+}
+
+template <typename Node>
+std::vector<size_t> recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t indT)
+{
+    std::vector<size_t> ret{};
+
+    if (!(level(indS) == level(indT)))
+    {
+        throw std::range_error("Source and target nodes must be on the same level!");
+    }
+
+    // non-recursive implementation
+    // this is equal to setting the whole level to the left value below source for all the levels
+    // below and including the initial
+    size_t l = level(indS);
+    size_t offset = indS - left_boundary(l);
+    size_t source = indS;
+
+    while (source < super::m_data.size())
+    {
+        auto start = super::m_data.begin() + source + 1;
+        // fill to the end of the level - std::algorithms use a half-open bracket
+        auto end = super::m_data.begin() + left_boundary(l + 1);
+
+        std::fill(start, end, super::m_data[source]);
+
+        // proceed to the next level
+        ++l;
+        source = left_boundary(l) + offset;
     }
 
     return ret;
@@ -653,42 +734,6 @@ recombinantBTree<Node>::copySubTreeLeft(size_t indS, size_t indT, std::vector<si
 }
 
 template <typename Node>
-std::vector<size_t> recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t indT)
-{
-    std::vector<size_t> ret{};
-
-    // recursive implementation
-    //    copySubTreeRight(indS, indT, ret);
-
-    // non-recursive implementation
-    if (!(level(indS) == level(indT)))
-    {
-        throw std::range_error("Source and target nodes must be on the same level!");
-    }
-
-    // this is equal to setting the whole level to the left value below source for all the levels
-    // below and including the initial
-    size_t l = level(indS);
-    size_t offset = indS - left_boundary(l);
-    size_t source = indS;
-
-    while (source < super::m_data.size())
-    {
-        auto start = super::m_data.begin() + source + 1;
-        // fill to the end of the level - std::algorithms use a half-open bracket
-        auto end = super::m_data.begin() + left_boundary(l + 1);
-
-        std::fill(start, end, super::m_data[source]);
-
-        // proceed to the next level
-        ++l;
-        source = left_boundary(l) + offset;
-    }
-
-    return ret;
-}
-
-template <typename Node>
 void recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t indT, std::vector<size_t> & target_indices)
 {
     bTree<Node>::m_data[indT] = super::m_data[indS];
@@ -717,28 +762,31 @@ void recombinantBTree<Node>::copySubTreeRight(size_t indS, size_t indT, std::vec
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // recombinantTTree
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template<typename Node>
+
+template <typename Node>
 size_t recombinantTTree<Node>::level(size_t ind)
 {
     // analytic derivation
     return static_cast<size_t>(std::floor(std::sqrt(ind)));
 }
 
-template<typename Node>
+template <typename Node>
 size_t recombinantTTree<Node>::level_size(size_t ind)
 {
     return 1 + 2 * level(ind);
 }
 
-template<typename Node>
+template <typename Node>
 size_t recombinantTTree<Node>::left_boundary(size_t level)
 {
     return level * level;
 }
 
-template<typename Node>
+template <typename Node>
 size_t recombinantTTree<Node>::right_boundary(size_t level)
 {
     return (level + 1) * (level + 1) - 1;
