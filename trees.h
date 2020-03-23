@@ -275,22 +275,23 @@ public:
 
     ///@}
 
-    //! \brief copies whole sub-tree from source index to target index,
-    //! keeping the values for the shared nodes from the initial left descend.
-    //! Warning: indices must be on the same level.
-    //! \param indS: source index
-    //! \param indT: target index
-    //! \return A vector of copied indices in order of copying
-    std::vector<size_t> copySubTreeSource(size_t indS, size_t indT);
+// NOTE: not needed at the moment, can use inherited recursive copySubTree.
+//    //! \brief copies whole sub-tree from source index to target index,
+//    //! keeping the values for the shared nodes from the initial left descend.
+//    //! Warning: indices must be on the same level.
+//    //! \param indS: source index
+//    //! \param indT: target index
+//    //! \return A vector of copied indices in order of copying
+//    std::vector<size_t> copySubTreeSource(size_t indS, size_t indT);
 
-    //! \brief copies whole sub-tree from source index to target index,
-    //! setting the values for the shared nodes from final right descend.
-    //! This means a left target can serve as a source for a node to its right later on!
-    //! Warning: indices must be on the same level.
-    //! \param indS: source index
-    //! \param indT: target index
-    //! \return A vector of copied indices in order of copying
-    std::vector<size_t> copySubTreeTarget(size_t indS, size_t indT);
+//    //! \brief copies whole sub-tree from source index to target index,
+//    //! setting the values for the shared nodes from final right descend.
+//    //! This means a left target can serve as a source for a node to its right later on!
+//    //! Warning: indices must be on the same level.
+//    //! \param indS: source index
+//    //! \param indT: target index
+//    //! \return A vector of copied indices in order of copying
+//    std::vector<size_t> copySubTreeTarget(size_t indS, size_t indT);
 
 protected:
     using super = bTree<Node>;
@@ -883,40 +884,40 @@ const Node & recombinantTTree<Node>::centerchild(const Node & node) const
     super::m_data[goDownCenter(super::node2Ind(node))];
 }
 
-template<typename Node>
-std::vector<size_t> recombinantTTree<Node>::copySubTreeSource(size_t indS, size_t indT)
-{
-    std::vector<size_t> ret{};
+//template<typename Node>
+//std::vector<size_t> recombinantTTree<Node>::copySubTreeSource(size_t indS, size_t indT)
+//{
+//    std::vector<size_t> ret{};
 
-    if (!(level(indS) == level(indT)))
-    {
-        throw std::range_error("Source and target nodes must be on the same level!");
-    }
-
-    // TODO: see notes
-
-//    // non-recursive implementation:
-//    // this is equal to setting the last value on the level to the value preceding it for all the levels below
-//    // and including the initial
-//    size_t l = level(indS);
-//    size_t last = right_boundary(l);
-
-//    while (last < super::m_data.size())
+//    if (!(level(indS) == level(indT)))
 //    {
-//        super::m_data[last] = super::m_data[last - 1];
-
-//        // proceed to the next level
-//        ++l;
-//        last = right_boundary(l);
+//        throw std::range_error("Source and target nodes must be on the same level!");
 //    }
 
-    return ret;
-}
-template<typename Node>
-std::vector<size_t> recombinantTTree<Node>::copySubTreeTarget(size_t indS, size_t indT)
-{
-    // TODO: see notes
-}
+//    // TODO: see notes
+
+////    // non-recursive implementation:
+////    // this is equal to setting the last value on the level to the value preceding it for all the levels below
+////    // and including the initial
+////    size_t l = level(indS);
+////    size_t last = right_boundary(l);
+
+////    while (last < super::m_data.size())
+////    {
+////        super::m_data[last] = super::m_data[last - 1];
+
+////        // proceed to the next level
+////        ++l;
+////        last = right_boundary(l);
+////    }
+
+//    return ret;
+//}
+//template<typename Node>
+//std::vector<size_t> recombinantTTree<Node>::copySubTreeTarget(size_t indS, size_t indT)
+//{
+//    // TODO: see notes
+//}
 
 } // namespace cm
 
