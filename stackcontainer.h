@@ -44,6 +44,8 @@ public:
     StackContainer( std::initializer_list<T> init) : m_data( init ), m_top( m_data.size() - 1 )
     { m_data.shrink_to_fit();}
 
+    size_t size() const { return m_data.size(); }
+
 // a bit of a functional approach
     template< typename Ret >
     Ret shrink( Ret && ret )
