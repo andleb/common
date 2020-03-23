@@ -30,6 +30,7 @@ T moving_accumulate(BeginIt first, const EndIt & last, T init, F folding_functio
 
 //! \brief Wrapper around std::any for std::functions.
 // Adapted from c.f.: https://stackoverflow.com/questions/45715219/store-functions-with-different-signatures-in-a-map/
+// WARNING: Had trouble compiling with libc++ 9.0 on Linux.
 template <typename Ret>
 struct AnyCallable
 {

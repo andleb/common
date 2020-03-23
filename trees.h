@@ -248,7 +248,7 @@ public:
     virtual size_t goUpCenter(size_t ind) const;
     virtual size_t goUpRight(size_t ind) const;
     virtual size_t goDownLeft(size_t ind) const override;
-    virtual size_t goDownCenter(size_t ind) const override;
+    virtual size_t goDownCenter(size_t ind) const;
     virtual size_t goDownRight(size_t ind) const override;
 
     //! @name Additional node-based operations
