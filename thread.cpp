@@ -8,7 +8,51 @@
 namespace cm
 {
 
-Barrier::Barrier(uint p_nThreads) : m_nThreads(p_nThreads), m_counter(m_nThreads.load()), m_condvar() {}
+
+SpinLockBarrier::SpinLockBarrier(unsigned p_nThreads) : m_nThreads(p_nThreads), m_counter(m_nThreads.load()) {}
+
+void SpinLockBarrier::arrive_and_wait() noexcept
+{
+    if (m_nThreads == 0)
+    {
+        return;
+    }
+
+    size_t numResets = m_numResets;
+
+    if (--m_counter == 0)
+    {
+        // launch the waiting threads
+        m_counter = m_nThreads.load();
+        m_numResets++;
+    }
+    else
+    {
+        while (numResets == m_numResets)
+        {
+            std::this_thread::yield();
+        }
+    }
+}
+
+void SpinLockBarrier::arrive_and_drop() noexcept
+{
+    if (m_nThreads == 0)
+    {
+        return;
+    }
+
+    --m_nThreads;
+
+    if (--m_counter == 0)
+    {
+        m_counter = m_nThreads.load();
+        m_numResets++;
+    }
+}
+
+
+Barrier::Barrier(unsigned p_nThreads) : SpinLockBarrier(p_nThreads) {}
 
 void Barrier::arrive_and_wait() noexcept
 {
@@ -17,22 +61,22 @@ void Barrier::arrive_and_wait() noexcept
         return;
     }
 
-    std::thread::id resetting_thread = std::numeric_limits<std::thread::id>::max();
+    size_t numResets = m_numResets;
+
+    std::unique_lock lk(m_mutex, std::defer_lock);
 
     if (--m_counter == 0)
     {
+        // launch the waiting threads
+        m_counter = m_nThreads.load();
+        m_numResets++;
         m_condvar.notify_all();
-        resetting_thread = std::this_thread::get_id();
     }
     else
     {
-        std::unique_lock lk(m_mutex);
-        m_condvar.wait(lk, [this]() { return m_counter == 0; });
-    }
-
-    if(std::this_thread::get_id() == resetting_thread)
-    {
-        m_counter =  m_nThreads.load();
+        lk.lock();
+        m_condvar.wait(lk, [this, numResets]() { return numResets != m_numResets; });
+        lk.unlock();
     }
 }
 
@@ -43,14 +87,68 @@ void Barrier::arrive_and_drop() noexcept
         return;
     }
 
-    --m_counter;
     --m_nThreads;
 
-    if (m_counter == 0)
+    if (--m_counter == 0)
     {
+        m_counter = m_nThreads.load();
+        m_numResets++;
         m_condvar.notify_all();
-        m_counter = m_nThreads.load(std::memory_order_seq_cst);
     }
+}
+
+FlexBarrier::FlexBarrier(unsigned p_nThreads) : FlexBarrier(p_nThreads, []() noexcept { return -1; }) {}
+
+FlexBarrier::FlexBarrier(unsigned p_nThreads, FlexBarrier::comp_func p_func) : Barrier(p_nThreads), m_func(std::move(p_func)) {}
+
+void FlexBarrier::arrive_and_wait() noexcept
+{
+    if (m_nThreads == 0)
+    {
+        return;
+    }
+
+    size_t numResets = m_numResets;
+
+    std::unique_lock lk(m_mutex, std::defer_lock);
+
+    if (--m_counter == 0)
+    {
+        release();
+    }
+    else
+    {
+        lk.lock();
+        m_condvar.wait(lk, [this, numResets]() { return numResets != m_numResets; });
+        lk.unlock();
+    }
+}
+
+void FlexBarrier::arrive_and_drop() noexcept
+{
+    if (m_nThreads == 0)
+    {
+        return;
+    }
+
+    --m_nThreads;
+
+    if (--m_counter == 0)
+    {
+        release();
+    }
+}
+
+void FlexBarrier::release() noexcept
+{
+    std::ptrdiff_t ret = m_func();
+    if(ret >= 0)
+    {
+        m_nThreads = static_cast<unsigned>(ret);
+    }
+    m_counter = m_nThreads.load();
+    m_numResets++;
+    m_condvar.notify_all();
 }
 
 
