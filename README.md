@@ -22,6 +22,9 @@ Generic adapters that implement design patterns on provided classes.
 A *std::stack* interface that exposes the underlying container for custom operations.
 *stackcontainer* is an implementation of such a container in a *std::vector* for random-access.
 
+#### thread
+Concurrency helpers, such as an implementation of *std::experimental::barrier* & *std::experimental::flex_barrier*.
+
 #### tools
 Miscellaneous other routines.
 
