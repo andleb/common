@@ -17,16 +17,23 @@ void Barrier::arrive_and_wait() noexcept
         return;
     }
 
+    std::thread::id resetting_thread = std::numeric_limits<std::thread::id>::max();
+
     if (--m_counter == 0)
     {
         m_condvar.notify_all();
-        m_counter = m_nThreads.load();
-        return;
+        resetting_thread = std::this_thread::get_id();
+    }
+    else
+    {
+        std::unique_lock lk(m_mutex);
+        m_condvar.wait(lk, [this]() { return m_counter == 0; });
     }
 
-    std::unique_lock lk(m_mutex);
-    m_condvar.wait(lk, [this]() { return m_counter == 0; });
-    lk.unlock();
+    if(std::this_thread::get_id() == resetting_thread)
+    {
+        m_counter =  m_nThreads.load();
+    }
 }
 
 void Barrier::arrive_and_drop() noexcept
@@ -42,7 +49,7 @@ void Barrier::arrive_and_drop() noexcept
     if (m_counter == 0)
     {
         m_condvar.notify_all();
-        m_counter = m_nThreads.load();
+        m_counter = m_nThreads.load(std::memory_order_seq_cst);
     }
 }
 
