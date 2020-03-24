@@ -20,11 +20,13 @@ set(HEADERS
     stackcontainer.h
     tools.h
     trees.h
+    thread.h
     )
 
 set(SOURCES
     # empty, just to help cMake determine language
     numeric.cpp
+    thread.cpp
     )
 
 add_library(common SHARED ${HEADERS} ${SOURCES})
