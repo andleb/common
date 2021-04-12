@@ -38,3 +38,6 @@ The *install.sh* script performs the compilation & installation for every build 
 ## Authors
 
 Andrej Leban
+
+andrejleban@gmail.com
+
