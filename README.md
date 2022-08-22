@@ -35,9 +35,3 @@ Miscellaneous other routines.
 *CMake* installation currently configured for Unix, installs under */usr/local/include* & */usr/local/lib*.
 The *install.sh* script performs the compilation & installation for every build configuration defined by *CMake* in the *build/* directory - useful for installing after making changes to the source.
 
-## Author
-
-Andrej Leban
-
-andrejleban@gmail.com
-
